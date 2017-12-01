@@ -1,42 +1,45 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { DetailsPage } from '../details/details';
+import { Observable } from 'rxjs/Observable';
+import { key } from '../../app/tmdb';
+import { HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-interface searchResult {
-  title: string;
-  author: string;
-  date: number;
-  image: string;
+export interface Result {
+  original_title: string;
+  release_date: number;
+  poster_path: string;
+  overview: string;
 }
-
-const RESULTS: Array<searchResult> = [{
-  title: "resultat1", author: "author1", date: 2017, image: '<img src="http://lorempixel.com/400/200" />'
-}, {
-  title: "resultat2", author: "author2", date: 2018, image: '<img src="http://lorempixel.com/400/200" />'
-}];
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
 })
 
 export class HomePage {
-
-  listRes: Array<searchResult> = [];
+  listRes: Observable<Result[]> = null;
   query: string = '';
   showNoRes: boolean = true;
-  constructor(public navCtrl: NavController) {
+  pushPage: any = DetailsPage;
 
-  }
+  constructor(public navCtrl: NavController, private http: HttpClient) {}
 
   onImput():void{
     console.log(this.query);
     if(this.query == ''){
-      this.listRes = [];
+      this.listRes = null;
       this.showNoRes = true;
     }else{
       this.showNoRes = false;
-      this.listRes = RESULTS;
+      this.listRes = this.fetchResults();
     }
   }
 
+  fetchResults():Observable<Result[]>{
+    return this.http.get<Result[]>("https://api.themoviedb.org/3/search/movie", {
+      params: new HttpParams().set('api_key', key).set('query', this.query)
+    }).pluck("results");
+  }
 }

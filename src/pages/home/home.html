@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      Films
     </ion-title>
   </ion-navbar>
   <ion-searchbar [(ngModel)]="query" (ionInput)="onImput()"></ion-searchbar>
@@ -9,8 +9,8 @@
 
 <ion-content padding>
   <ion-list>
-  <button ion-item *ngFor="let item of listRes">
-    {{ item.title }}
+  <button ion-item [navPush]="pushPage" [navParams]="{details:item}" *ngFor="let item of listRes | async">
+    {{ item.original_title }}
   </button>
   <ion-item><div *ngIf="showNoRes">Aucun résultat</div></ion-item>
   </ion-list>

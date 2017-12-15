@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform} from 'ionic-angular';
 import { DetailsPage } from '../details/details';
 import { key } from '../../app/tmdb';
 import { HttpParams } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { AlertController } from 'ionic-angular';
 import { Subscription } from 'rxjs/Subscription';
 import { Shake } from '@ionic-native/shake';
 import { Observable } from 'rxjs/Observable';
+
 
 export interface Result {
   original_title: string;
@@ -28,9 +29,13 @@ export class HomePage {
   showNoRes: boolean = true;
   pushPage: any = DetailsPage;
 
-  constructor(public navCtrl: NavController, private http: HttpClient, private alertCtrl: AlertController, private shake: Shake) {
-
-  }
+  constructor(
+    private navCtrl: NavController,
+    private http: HttpClient,
+    private alertCtrl: AlertController,
+    private shake: Shake,
+    private platform: Platform
+  ) {}
 
   onImput():void{
     console.log(this.query);
@@ -50,8 +55,8 @@ export class HomePage {
   }
 
   private discoverMovies():Observable<Result[]> {
-    return this.http.get<Result[]>("https://api.themoviedb.org/3/search/movie-discover", {
-      params: new HttpParams().set('api_key', key).set('primary_release_year', this.query)
+    return this.http.get<Result[]>("https://api.themoviedb.org/3/discover/movie", {
+      params: new HttpParams().set('api_key', key).set('primary_release_year', "2018")
     }).pluck("results");
   }
 
@@ -72,11 +77,18 @@ export class HomePage {
         }
       ]
     });
-    alert.present;
+    alert.present();
   }
 
   ionViewDidEnter():void{
-    this.shakeSubscription = this.shake.startWatch().switchMap(() => this.discoverMovies()).subscribe(movies=>this.showRandomMovieAlert(movies));
+    this.shakeSubscription = Observable.fromPromise(this.platform.ready())
+    .switchMap(() =>this.shake.startWatch())
+    .switchMap(()=>this.discoverMovies())
+    .subscribe(movies => this.showRandomMovieAlert(movies));
+
+    // this.shakeSubscription = this.shake.startWatch()
+    // .switchMap(() => this.discoverMovies())
+    // .subscribe(movies => this.showRandomMovieAlert(movies));
   }
 
   ionViewWillLeave():void{

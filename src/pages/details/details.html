@@ -12,9 +12,13 @@
 </ion-header>
 
 <ion-content padding>
-  <p>{{res.original_title}}</p>
+  <DIV ALIGN="CENTER">
+    <h1>{{res.original_title}}</h1>
+  </DIV>
   <p>{{res.release_date | date:'fullDate'}}</p>
-  <img src="https://image.tmdb.org/t/p/w300/{{res.poster_path}}" alt="Poster" />
+  <DIV ALIGN="CENTER">
+    <img src="https://image.tmdb.org/t/p/w300/{{res.poster_path}}" alt="Poster" />
+  </DIV>
   <p>{{res.overview}}</p>
   <br>
 </ion-content>

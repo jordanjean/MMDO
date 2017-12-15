@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { searchResult } from '../home/home';
+import { Result } from '../home/home';
 
 /**
  * Generated class for the DetailsPage page.
@@ -15,7 +15,7 @@ import { searchResult } from '../home/home';
 })
 export class DetailsPage {
 
-    res: searchResult;
+    res: Result;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
       this.res = this.navParams.get("details");
 

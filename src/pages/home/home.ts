@@ -42,4 +42,10 @@ export class HomePage {
       params: new HttpParams().set('api_key', key).set('query', this.query)
     }).pluck("results");
   }
+
+  discoverMovies():Observable<Result[]> {
+    return this.http.get<Result[]>("https://api.themoviedb.org/3/search/movie-discover", {
+      params: new HttpParams().set('api_key', key).set('query', this.query)
+    }).pluck("results");
+  }
 }
